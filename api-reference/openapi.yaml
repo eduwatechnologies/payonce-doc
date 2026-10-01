@@ -1,0 +1,183 @@
+openapi: 3.0.3
+info:
+  title: PayOnce API
+  version: 1.0.0
+  description: PayOnce VTU platform API.
+servers:
+  - url: https://api.payonce.com.ng/api/v1
+    description: Production
+  - url: http://localhost:8080/api/v1
+    description: Development
+security:
+  - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    Network:
+      type: string
+      enum: [MTN, AIRTEL, GLO, 9MOBILE]
+    Error:
+      type: object
+      properties:
+        error: { type: string, example: Insufficient balance }
+    Success:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string, example: Transaction successful }
+        data:
+          type: object
+          properties:
+            transactionId: { type: string, example: txn_123456789 }
+            status: { type: string, example: delivered }
+            mode: { type: string, example: sandbox, description: Present for sandbox transactions. }
+  responses:
+    Ok:
+      description: Successful transaction
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Success' }
+    Failed:
+      description: Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+paths:
+  /airtime:
+    post:
+      tags: [Airtime]
+      summary: Purchase airtime
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, networkId, amount]
+              properties:
+                phone: { type: string, example: '08012345678' }
+                networkId: { $ref: '#/components/schemas/Network' }
+                amount: { type: number, example: 100 }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Failed' }
+  /data:
+    post:
+      tags: [Data]
+      summary: Purchase data bundle
+      description: Provide either `packageCode` or `planId`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, networkId]
+              properties:
+                phone: { type: string, example: '08012345678' }
+                networkId: { $ref: '#/components/schemas/Network' }
+                packageCode: { type: string, example: MTN_SME_500MB_30DAYS, description: Required if planId is omitted. }
+                planId: { type: string, description: Internal plan ID. Required if packageCode is omitted. }
+                amount: { type: number, description: Optional if the plan has a fixed price. }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Failed' }
+  /cable/verify:
+    post:
+      tags: [Cable TV]
+      summary: Verify smartcard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cableType, smartCardNo]
+              properties:
+                cableType: { type: string, enum: [dstv, gotv, startimes, showmax], example: dstv }
+                smartCardNo: { type: string, example: '1234567890' }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Failed' }
+  /cable:
+    post:
+      tags: [Cable TV]
+      summary: Purchase cable TV subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider, smartCardNo, phone, amount]
+              properties:
+                provider: { type: string, enum: [dstv, gotv, startimes, showmax] }
+                smartCardNo: { type: string, description: Smartcard / IUC number. }
+                packageCode: { type: string, example: DSTV_PREMIUM_MONTHLY, description: Required if planId is omitted. }
+                planId: { type: string, description: Required if packageCode is omitted. }
+                phone: { type: string, example: '08012345678' }
+                amount: { type: number, example: 24500 }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Failed' }
+  /electricity/verify:
+    post:
+      tags: [Electricity]
+      summary: Verify meter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [company, metertype, meterno]
+              properties:
+                company: { type: string, example: ikejaelectric }
+                metertype: { type: string, enum: [prepaid, postpaid] }
+                meterno: { type: string, example: '111122223333' }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Failed' }
+  /electricity:
+    post:
+      tags: [Electricity]
+      summary: Purchase electricity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [company, type, meter_no, amount, phone]
+              properties:
+                company: { type: string, example: ikejaelectric, description: Disco ID. }
+                type: { type: string, enum: [prepaid, postpaid] }
+                meter_no: { type: string, example: '111122223333' }
+                amount: { type: number, example: 2000 }
+                packageCode: { type: string, description: Optional package code. }
+                phone: { type: string, example: '08012345678' }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Failed' }
+  /exam:
+    post:
+      tags: [Exam Pins]
+      summary: Purchase exam PINs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [noOfPin]
+              properties:
+                noOfPin: { type: integer, enum: [1, 2, 3, 4, 5, 10], example: 1 }
+                packageCode: { type: string, example: WAEC_PIN_1, description: Required if planId is omitted. }
+                planId: { type: string, description: Required if packageCode is omitted. }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Failed' }

@@ -1,0 +1,14 @@
+---
+title: "Sandbox"
+description: "Test your integration without deducting real funds."
+---
+
+Use a test API key (starts with `test_`) in the `x-api-key` header. Nothing else changes.
+
+<AccordionGroup>
+  <Accordion title="No wallet deductions">Sandbox transactions never debit your wallet.</Accordion>
+  <Accordion title="Mock responses">All services return successful mock responses.</Accordion>
+  <Accordion title="Identify sandbox transactions">Response data includes `"mode": "sandbox"`.</Accordion>
+</AccordionGroup>
+
+<Tip>Switch from sandbox to live by swapping the key. No code changes are needed.</Tip>

@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "mint": "^4.2.964"
+  }
+}

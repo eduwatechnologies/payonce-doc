@@ -1,0 +1,51 @@
+---
+title: "Authentication"
+description: "Authenticate every request with your API key."
+---
+
+Send your API key in the `x-api-key` header on every request.
+
+```http
+x-api-key: YOUR_API_KEY_HERE
+```
+
+| Environment | Key |
+|---|---|
+| Live | Your live API key |
+| Sandbox | A test key starting with `test_` |
+
+<Warning>
+Never expose your live API key in client-side code, mobile apps or public repositories. Call PayOnce from your server only.
+</Warning>
+
+<CodeGroup>
+```bash cURL
+curl https://api.payonce.com.ng/api/v1/airtime \
+  -H "x-api-key: $PAYONCE_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"phone":"08012345678","networkId":"MTN","amount":100}'
+```
+
+```javascript Node.js
+const res = await fetch("https://api.payonce.com.ng/api/v1/airtime", {
+  method: "POST",
+  headers: {
+    "x-api-key": process.env.PAYONCE_KEY,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ phone: "08012345678", networkId: "MTN", amount: 100 }),
+});
+console.log(await res.json());
+```
+
+```python Python
+import os, requests
+
+r = requests.post(
+    "https://api.payonce.com.ng/api/v1/airtime",
+    headers={"x-api-key": os.environ["PAYONCE_KEY"]},
+    json={"phone": "08012345678", "networkId": "MTN", "amount": 100},
+)
+print(r.json())
+```
+</CodeGroup>

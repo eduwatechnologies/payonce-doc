@@ -1,0 +1,37 @@
+---
+title: "PayOnce API"
+description: "Integrate airtime, data, cable TV, electricity and exam PIN purchases into your app."
+---
+
+The PayOnce VTU API lets you sell Nigerian bill-payment and top-up services programmatically.
+
+<CardGroup cols={2}>
+  <Card title="Airtime" icon="phone" href="/api-reference/airtime/purchase-airtime">MTN, Airtel, Glo, 9mobile</Card>
+  <Card title="Data bundles" icon="wifi" href="/api-reference/data/purchase-data-bundle">Buy by `packageCode` or `planId`</Card>
+  <Card title="Cable TV" icon="tv" href="/api-reference/cable-tv/purchase-cable-tv-subscription">DStv, GOtv, StarTimes, Showmax</Card>
+  <Card title="Electricity" icon="bolt" href="/api-reference/electricity/purchase-electricity">Prepaid and postpaid meters</Card>
+  <Card title="Exam PINs" icon="graduation-cap" href="/api-reference/exam-pins/purchase-exam-pins">WAEC, NECO, NABTEB</Card>
+  <Card title="Sandbox" icon="flask" href="/sandbox">Test without spending real funds</Card>
+</CardGroup>
+
+## Quick start
+
+<Steps>
+  <Step title="Get your API key">Copy your live key (or a `test_` key for sandbox) from your PayOnce dashboard.</Step>
+  <Step title="Make a request">
+```bash
+curl -X POST https://api.payonce.com.ng/api/v1/airtime \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"phone":"08012345678","networkId":"MTN","amount":100}'
+```
+  </Step>
+  <Step title="Handle the response">A successful call returns `success: true` and a `data.transactionId`.</Step>
+</Steps>
+
+## Base URLs
+
+| Environment | URL |
+|---|---|
+| Production | `https://api.payonce.com.ng/api/v1` |
+| Development | `http://localhost:8080/api/v1` |

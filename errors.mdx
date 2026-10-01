@@ -1,0 +1,22 @@
+---
+title: "Errors"
+description: "Response format and error handling."
+---
+
+## Success (`200 OK`)
+
+```json
+{
+  "success": true,
+  "message": "Transaction successful",
+  "data": { "transactionId": "txn_123456789", "status": "delivered" }
+}
+```
+
+## Error (`4xx` / `5xx`)
+
+```json
+{ "error": "Insufficient balance" }
+```
+
+Always check the HTTP status code and the `error` field. Do not retry a purchase blindly after a timeout: confirm the transaction status first to avoid double charges.
